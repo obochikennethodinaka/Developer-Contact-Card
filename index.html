@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Developer Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #050A0E;
+      --surface: #0D1B2A;
+      --card: #0F2235;
+      --accent: #00F5D4;
+      --accent2: #00B4D8;
+      --glow: rgba(0, 245, 212, 0.18);
+      --text: #E0F7FA;
+      --muted: #5B8FA8;
+      --border: rgba(0,245,212,0.15);
+    }
+
+    body {
+      background: var(--bg);
+      font-family: 'Syne', sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Animated grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,245,212,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,245,212,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      animation: gridPulse 8s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    /* Radial ambient glow */
+    body::after {
+      content: '';
+      position: fixed;
+      top: -20%;
+      right: -10%;
+      width: 60vw;
+      height: 60vw;
+      background: radial-gradient(circle, rgba(0,180,216,0.12) 0%, transparent 70%);
+      pointer-events: none;
+      animation: ambientDrift 12s ease-in-out infinite alternate;
+    }
+
+    @keyframes gridPulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+    @keyframes ambientDrift {
+      from { transform: translate(0, 0); }
+      to { transform: translate(-5%, 8%); }
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      gap: 0;
+      width: min(900px, 96vw);
+      min-height: 480px;
+      border-radius: 2px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 0 80px rgba(0,245,212,0.06), 0 0 0 1px rgba(0,245,212,0.07);
+      animation: cardIn 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(32px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Photo panel */
+    .photo-panel {
+      position: relative;
+      width: 42%;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .photo-panel img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      filter: grayscale(20%) contrast(1.05) brightness(0.92);
+      display: block;
+    }
+
+    /* Scanline overlay */
+    .photo-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(0,0,0,0.06) 3px,
+        rgba(0,0,0,0.06) 4px
+      );
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Gradient overlay on photo */
+    .photo-panel::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to right, transparent 60%, var(--surface) 100%),
+        linear-gradient(to bottom, rgba(0,245,212,0.08) 0%, transparent 40%),
+        linear-gradient(180deg, transparent 55%, rgba(5,10,14,0.5) 100%);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* Corner tag */
+    .photo-tag {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      z-index: 3;
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 4px 8px;
+      border: 1px solid rgba(0,245,212,0.3);
+      background: rgba(5,10,14,0.6);
+      backdrop-filter: blur(4px);
+    }
+
+    /* Status dot */
+    .status {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* Info panel */
+    .info-panel {
+      background: var(--surface);
+      flex: 1;
+      padding: 44px 40px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    /* Top accent line */
+    .info-panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2), transparent);
+    }
+
+    .label {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+      animation: fadeUp 0.8s 0.3s both;
+    }
+
+    .name {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: #fff;
+      animation: fadeUp 0.8s 0.4s both;
+    }
+
+    .name span {
+      color: var(--accent);
+    }
+
+    .role {
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      color: var(--accent2);
+      margin-top: 10px;
+      letter-spacing: 0.05em;
+      animation: fadeUp 0.8s 0.5s both;
+    }
+
+    .divider {
+      width: 48px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      margin: 24px 0;
+      animation: fadeUp 0.8s 0.6s both;
+    }
+
+    .bio {
+      font-size: 14px;
+      line-height: 1.75;
+      color: var(--muted);
+      max-width: 340px;
+      font-weight: 400;
+      animation: fadeUp 0.8s 0.65s both;
+    }
+
+    .bio strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* Tech stack */
+    .stack {
+      margin-top: 28px;
+      animation: fadeUp 0.8s 0.7s both;
+    }
+
+    .stack-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .stack-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      background: rgba(0,245,212,0.03);
+      transition: all 0.2s ease;
+      cursor: default;
+    }
+
+    .tag:hover {
+      background: rgba(0,245,212,0.1);
+      border-color: var(--accent);
+      box-shadow: 0 0 12px rgba(0,245,212,0.15);
+    }
+
+    /* Contact row */
+    .contact-row {
+      margin-top: auto;
+      padding-top: 28px;
+      display: flex;
+      gap: 16px;
+      animation: fadeUp 0.8s 0.8s both;
+    }
+
+    .btn {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 10px 22px;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 700;
+    }
+
+    .btn-primary:hover {
+      background: #fff;
+      box-shadow: 0 0 24px rgba(0,245,212,0.4);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      background: rgba(0,245,212,0.06);
+    }
+
+    /* Corner ID marker */
+    .corner-id {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      font-family: 'Space Mono', monospace;
+      font-size: 9px;
+      color: rgba(91,143,168,0.4);
+      letter-spacing: 0.1em;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Scanning line animation */
+    .scan-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,245,212,0.4), transparent);
+      animation: scan 4s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 4;
+      top: 0;
+    }
+
+    @keyframes scan {
+      0% { top: 0%; opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { top: 100%; opacity: 0; }
+    }
+
+    @media (max-width: 600px) {
+      .wrapper { flex-direction: column; min-height: auto; }
+      .photo-panel { width: 100%; height: 300px; }
+      .photo-panel::after {
+        background:
+          linear-gradient(to bottom, transparent 50%, var(--surface) 100%),
+          linear-gradient(180deg, transparent 55%, rgba(5,10,14,0.5) 100%);
+      }
+      .info-panel { padding: 28px 24px 32px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="photo-panel">
+      <div class="scan-line"></div>
+      <div class="photo-tag">ID // DEV_001</div>
+      <img src="../images1/IMG-20251122-WA0000.jpg" alt="Developer Profile Photo">
+      <div class="status">
+        <div class="status-dot"></div>
+        AVAILABLE FOR WORK
+      </div>
+    </div>
+
+    <div class="info-panel">
+      <div>
+        <div class="label">Web Developer</div>
+        <h1 class="name">Full Stack<br><span>Developer</span></h1>
+        <div class="role">// Building the Web of Tomorrow</div>
+
+        <div class="divider"></div>
+
+        <p class="bio">
+          Passionate <strong>full-stack web developer</strong> & <strong>Constructive Article Writer</strong> crafting clean, performant digital experiences.
+          Obsessed with <strong>elegant code</strong> <strong>, elegant writings</strong>, intuitive UI, and solutions that scale.
+          Currently open to exciting <strong>freelance & remote opportunities</strong>.
+        </p>
+
+        <div class="stack">
+          <div class="stack-label">Tech Stack</div>
+          <div class="stack-tags">
+            <span class="tag">Html</span>
+            <span class="tag">Css</span>
+            <span class="tag">JavaScripy</span>
+            <span class="tag">Bootstrap</span>
+            <span class="tag">React.js</span>
+            <span class="tag">Php</span>
+            <span class="tag">MySQL</span>
+            <span class="tag">Node.js</span>
+            <span class="tag">Laravel</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-row">
+        <a href="#" class="btn btn-primary">Hire Me →</a>
+        <a href="https://portfolio-pi-one-4casz8cm7n.vercel.app/#" class="btn btn-secondary">Portfolio</a>
+          <a href="/view/index.html" class="btn btn-secondary">Portfolio</a>
+      </div>
+      
+
+      <div class="corner-id">v1.0.0 // 2026</div>
+    </div>
+  </div>
+</body>
+</html>
